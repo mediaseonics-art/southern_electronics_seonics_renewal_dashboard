@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEONICS — Southern Electronics | Compliance & Renewal Dashboard</title>
+  <style>
+    /* ==========================================================================
+       SEONICS DESIGN TOKENS & PURE VANILLA CSS (ZERO EXTERNAL DEPENDENCIES)
+       ========================================================================== */
+    :root {
+      --seonics-navy: #272B6C;
+      --seonics-navy-dark: #1B1E52;
+      --seonics-navy-light: #353B8E;
+      --seonics-tint: #EEF0FA;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F8FAFC;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --border-light: #E2E8F0;
+
+      --status-active-bg: #DCFCE7;
+      --status-active-text: #166534;
+      --status-active-border: #86EFAC;
+
+      --status-warn-bg: #FEF3C7;
+      --status-warn-text: #92400E;
+      --status-warn-border: #FCD34D;
+
+      --status-exp-bg: #FEE2E2;
+      --status-exp-text: #991B1B;
+      --status-exp-border: #FCA5A5;
+
+      --wa-green: #16A34A;
+      --wa-green-hover: #15803D;
+
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.22), 0 4px 10px -2px rgba(15, 23, 42, 0.12);
+      --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--seonics-navy);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==========================================================================
+       HEADER BAR
+       ========================================================================== */
+    .app-header {
+      background-color: var(--seonics-navy);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    .header-inner {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-badge {
+      background: #FFFFFF;
+      color: var(--seonics-navy);
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      user-select: none;
+    }
+
+    .brand-titles h1 {
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .brand-titles p {
+      color: #C7D2FE;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .btn-white {
+      background: #FFFFFF;
+      color: var(--seonics-navy);
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-white:hover {
+      background: var(--seonics-tint);
+    }
+
+    .btn-navy {
+      background: var(--seonics-navy);
+      color: #FFFFFF;
+    }
+
+    .btn-navy:hover {
+      background: var(--seonics-navy-dark);
+    }
+
+    .btn-whatsapp {
+      background: var(--wa-green);
+      color: #FFFFFF;
+    }
+
+    .btn-whatsapp:hover {
+      background: var(--wa-green-hover);
+    }
+
+    .btn-outline {
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-light);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-subtle);
+      border-color: #CBD5E1;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34D399;
+      display: inline-block;
+    }
+
+    .badge-count {
+      background: #FBBF24;
+      color: #1E1B4B;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+
+    /* ==========================================================================
+       MAIN CONTAINER & KPI STRIP
+       ========================================================================== */
+    .main-wrap {
+      max-width: 1420px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: #A5B4FC;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--seonics-navy);
+      margin-top: 4px;
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: #64748B;
+      margin-top: 4px;
+    }
+
+    .kpi-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       TOOLBAR (FILTERS, SEARCH, VIEW SWITCHER)
+       ========================================================================== */
+    .toolbar {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-pill {
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-pill:hover {
+      background: #E2E8F0;
+    }
+
+    .filter-pill.active {
+      background: var(--seonics-navy);
+      color: #FFFFFF;
+      border-color: var(--seonics-navy);
+    }
+
+    .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 260px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 9px 14px 9px 34px;
+      border-radius: 10px;
+      border: 1px solid #CBD5E1;
+      font-size: 12px;
+      font-family: inherit;
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--seonics-navy);
+      background: #FFFFFF;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748B;
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .view-toggle {
+      display: inline-flex;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+    }
+
+    .view-btn {
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .view-btn.active {
+      background: #FFFFFF;
+      color: var(--seonics-navy);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ==========================================================================
+       SECTION TITLE
+       ========================================================================== */
+    .section-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .section-banner h2 {
+      color: #FFFFFF;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .section-hint {
+      color: #E0E7FF;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    /* ==========================================================================
+       RENEWAL CARDS GRID & "CLICK HERE" BUTTONS
+       ========================================================================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .renewal-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .renewal-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 32px -6px rgba(0, 0, 0, 0.32);
+    }
+
+    .renewal-card.border-expired {
+      border-color: #FCA5A5;
+    }
+
+    .renewal-card.border-expiring {
+      border-color: #FCD34D;
+    }
+
+    .card-top-banner {
+      background-color: var(--seonics-navy);
+      color: #FFFFFF;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .card-cat-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: #C7D2FE;
+      margin-top: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .unit-pill {
+      background: #FFFFFF;
+      color: var(--seonics-navy);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .card-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-active {
+      background: var(--status-active-bg);
+      color: var(--status-active-text);
+      border-color: var(--status-active-border);
+    }
+
+    .badge-expiring {
+      background: var(--status-warn-bg);
+      color: var(--status-warn-text);
+      border-color: var(--status-warn-border);
+    }
+
+    .badge-expired {
+      background: var(--status-exp-bg);
+      color: var(--status-exp-text);
+      border-color: var(--status-exp-border);
+    }
+
+    .days-text {
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .dates-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .date-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748B;
+    }
+
+    .date-val {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--seonics-navy);
+      margin-top: 2px;
+    }
+
+    .meta-list {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .meta-row span:first-child {
+      color: #64748B;
+    }
+
+    .meta-row span:last-child {
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 170px;
+    }
+
+    .card-footer {
+      padding: 0 18px 18px 18px;
+    }
+
+    /* Prominent Signature SEONICS "CLICK HERE" Button */
+    .btn-click-here {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: #FFFFFF;
+      color: var(--seonics-navy);
+      border: 2px solid var(--seonics-navy);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.16s ease;
+    }
+
+    .renewal-card:hover .btn-click-here,
+    .btn-click-here:hover {
+      background: var(--seonics-navy);
+      color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       GOOGLE SHEET TABLE VIEW
+       ========================================================================== */
+    .table-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .table-header-bar {
+      background: var(--seonics-navy);
+      color: #FFFFFF;
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table.sheet-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    table.sheet-table th {
+      background: #F1F5F9;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+
+    table.sheet-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: middle;
+    }
+
+    table.sheet-table tr:hover td {
+      background: var(--seonics-tint);
+    }
+
+    /* ==========================================================================
+       MODALS & DRAWERS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 780px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-modal);
+    }
+
+    .modal-box.modal-sm {
+      max-width: 540px;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #FFFFFF;
+    }
+
+    .modal-header.navy-header {
+      background: var(--seonics-navy);
+      color: #FFFFFF;
+      border-bottom: none;
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-brand-tag {
+      background: var(--seonics-navy);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-header.navy-header .modal-close {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+    }
+
+    .modal-body {
+      padding: 22px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .info-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .info-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748B;
+      margin-bottom: 5px;
+    }
+
+    .field-input, .field-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid #CBD5E1;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: #FFFFFF;
+    }
+
+    .field-input:focus, .field-textarea:focus {
+      outline: none;
+      border-color: var(--seonics-navy);
+    }
+
+    .panel-box {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: var(--bg-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .doc-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pdf-tag {
+      background: #FEE2E2;
+      color: #B91C1C;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+
+    .upload-drop {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border: 2px dashed #94A3B8;
+      border-radius: 10px;
+      background: #FFFFFF;
+      color: var(--seonics-navy);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .upload-drop:hover {
+      border-color: var(--seonics-navy);
+      background: var(--seonics-tint);
+    }
+
+    pre.code-block {
+      background: #0F172A;
+      color: #E2E8F0;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 11px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       FOOTER & TOAST
+       ========================================================================== */
+    .app-footer {
+      background: var(--seonics-navy);
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      color: #C7D2FE;
+      margin-top: 24px;
+    }
+
+    .footer-inner {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1200px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid, .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .info-grid-3, .info-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .kpi-grid, .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-box {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP HEADER BAR
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <div class="brand-badge">SEONICS</div>
+        <div class="brand-titles">
+          <h1>SOUTHERN ELECTRONICS (BANGALORE) PVT. LTD.</h1>
+          <p>Compliance &amp; Renewal Management Portal &bull; Peenya Phase-1, Bengaluru - 560 058</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-glass" onclick="openSheetModal()">
+          <span class="status-dot"></span>
+          <span id="sheet-sync-label">Google Sheet Sync</span>
+        </button>
+
+        <button class="btn btn-glass" onclick="exportCSV()">
+          <span>Export CSV</span>
+        </button>
+
+        <button class="btn btn-glass" onclick="openLogsModal()">
+          <span>Alert Log</span>
+          <span id="log-badge" class="badge-count">0</span>
+        </button>
+
+        <button class="btn btn-white" onclick="openAddModal()">
+          <span>+ ADD RENEWAL</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN DASHBOARD WORKSPACE
+       ======================================================================== -->
+  <main class="main-wrap">
+
+    <!-- 1. KPI SUMMARY STRIP -->
+    <section class="kpi-grid">
+      <div class="kpi-card" onclick="setFilter('ALL')">
+        <div>
+          <span class="kpi-label">Total Tracked Renewals</span>
+          <div id="kpi-total" class="kpi-value">0</div>
+          <div class="kpi-sub">Click to view all licenses</div>
+        </div>
+        <div class="kpi-icon" style="background:#EEF0FA; color:#272B6C;">ALL</div>
+      </div>
+
+      <div class="kpi-card" onclick="setFilter('ACTIVE')">
+        <div>
+          <span class="kpi-label" style="color:#166534;">Active &amp; Compliant</span>
+          <div id="kpi-active" class="kpi-value" style="color:#166534;">0</div>
+          <div class="kpi-sub">Valid (&gt; 30 days left)</div>
+        </div>
+        <div class="kpi-icon" style="background:#DCFCE7; color:#166534;">OK</div>
+      </div>
+
+      <div class="kpi-card" onclick="setFilter('EXPIRING')">
+        <div>
+          <span class="kpi-label" style="color:#92400E;">Expiring Soon (&le;30 Days)</span>
+          <div id="kpi-expiring" class="kpi-value" style="color:#D97706;">0</div>
+          <div class="kpi-sub">Action &amp; reminder required</div>
+        </div>
+        <div class="kpi-icon" style="background:#FEF3C7; color:#B45309;">!</div>
+      </div>
+
+      <div class="kpi-card" onclick="setFilter('EXPIRED')">
+        <div>
+          <span class="kpi-label" style="color:#991B1B;">Expired / Action Required</span>
+          <div id="kpi-expired" class="kpi-value" style="color:#DC2626;">0</div>
+          <div class="kpi-sub">Immediate renewal needed</div>
+        </div>
+        <div class="kpi-icon" style="background:#FEE2E2; color:#B91C1C;">EXP</div>
+      </div>
+    </section>
+
+    <!-- 2. FILTER & SEARCH TOOLBAR -->
+    <section class="toolbar">
+      <div class="filter-group">
+        <button class="filter-pill active" data-filter="ALL" onclick="setFilter('ALL')">All Renewals</button>
+        <button class="filter-pill" data-filter="EXPIRED" onclick="setFilter('EXPIRED')">Expired</button>
+        <button class="filter-pill" data-filter="EXPIRING" onclick="setFilter('EXPIRING')">Expiring Soon</button>
+        <button class="filter-pill" data-filter="ACTIVE" onclick="setFilter('ACTIVE')">Active</button>
+      </div>
+
+      <div class="toolbar-right">
+        <div class="search-box">
+          <span class="search-icon">&#128269;</span>
+          <input id="search-input" type="text" placeholder="Search license, certificate no, owner..." oninput="renderDashboard()" />
+        </div>
+
+        <div class="view-toggle">
+          <button id="btn-view-cards" class="view-btn active" onclick="setView('CARDS')">Dashboard Cards</button>
+          <button id="btn-view-table" class="view-btn" onclick="setView('TABLE')">Google Sheet Table View</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SECTION BANNER -->
+    <div class="section-banner">
+      <h2>RENEWALS &amp; STATUTORY LICENSES</h2>
+      <span class="section-hint">Click <strong>CLICK HERE</strong> on any card to fetch expiry dates, attach documents, or send WhatsApp &amp; Email alerts</span>
+    </div>
+
+    <!-- 4. DASHBOARD CARDS GRID -->
+    <section id="cards-grid" class="cards-grid"></section>
+
+    <!-- 5. GOOGLE SHEET TABLE VIEW -->
+    <section id="table-view" class="table-card hidden">
+      <div class="table-header-bar">
+        <div>
+          <strong style="font-size:14px;">SEONICS Master Compliance Register (Google Sheet Format)</strong>
+          <div style="font-size:11px; color:#C7D2FE; margin-top:2px;">Live spreadsheet view synced with your dashboard records</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-glass" onclick="exportCSV()">Download CSV</button>
+          <button class="btn btn-white" onclick="syncFromGoogleSheet()">Fetch from Sheet</button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="sheet-table">
+          <thead>
+            <tr>
+              <th>Category &amp; Scope</th>
+              <th>Certificate / Ref No.</th>
+              <th>Last Renewed</th>
+              <th>Expiry Date</th>
+              <th>Next Reminder</th>
+              <th>Status</th>
+              <th>Registered Mobile &amp; Email</th>
+              <th style="text-align:right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div>
+        <strong style="color:#FFFFFF; letter-spacing:0.06em;">SEONICS | SOUTHERN ELECTRONICS (BANGALORE) PVT. LTD.</strong>
+        <div style="margin-top:2px;">16-A, Peenya Industrial Area, Phase-1, Bengaluru - 560 058, Karnataka, India</div>
+      </div>
+      <div>Statutory Compliance, Calibration &amp; Renewal Tracking System</div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL 1: "CLICK HERE" DOCUMENT, EXPIRY & WHATSAPP/EMAIL TRIGGER
+       ======================================================================== -->
+  <div id="detail-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-brand-tag">SEONICS</span>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h3 id="m-title" style="font-size:16px; font-weight:800; color:#272B6C;">VEHICLE INSURANCE</h3>
+              <span id="m-status-badge" class="status-badge badge-active">ACTIVE</span>
+            </div>
+            <p id="m-subtitle" style="font-size:12px; color:#475569; margin-top:2px;">Fleet &amp; Company Vehicles</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('detail-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Multi-unit selector pills if category has multiple records -->
+        <div id="sub-unit-bar" class="hidden">
+          <span class="field-label">Select Vehicle / Unit Record</span>
+          <div id="sub-unit-pills" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+        </div>
+
+        <!-- Reference & Authority Metadata -->
+        <div class="info-grid-3">
+          <div>
+            <span class="field-label">Certificate / Policy No.</span>
+            <strong id="m-ref" style="font-size:13px; color:#272B6C;">--</strong>
+          </div>
+          <div>
+            <span class="field-label">Issuing Authority</span>
+            <strong id="m-authority" style="font-size:12px; color:#0F172A;">--</strong>
+          </div>
+          <div>
+            <span class="field-label">Time Remaining</span>
+            <strong id="m-days-left" style="font-size:14px; color:#272B6C;">--</strong>
+          </div>
+        </div>
+
+        <!-- Editable Dates (Last Renewed, Expiry Date, Next Reminder) -->
+        <div class="info-grid-3">
+          <div>
+            <label class="field-label" for="m-last-renewed">Last Renewed Date</label>
+            <input id="m-last-renewed" type="date" class="field-input" onchange="onDetailFieldChange()" />
+          </div>
+          <div>
+            <label class="field-label" for="m-expiry-date">Fetched Expiry Date</label>
+            <input id="m-expiry-date" type="date" class="field-input" onchange="onDetailFieldChange()" />
+          </div>
+          <div>
+            <label class="field-label" for="m-next-reminder">Next Renewal Reminder</label>
+            <input id="m-next-reminder" type="date" class="field-input" onchange="onDetailFieldChange()" />
+          </div>
+        </div>
+
+        <!-- Document Upload & Contact Details -->
+        <div class="info-grid-2">
+          <!-- Left: Document Upload & Viewer -->
+          <div class="panel-box">
+            <span class="field-label" style="color:#272B6C; margin-bottom:0;">Uploaded Compliance Document</span>
+            <div class="doc-card">
+              <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                <span class="pdf-tag">DOC</span>
+                <div style="min-width:0;">
+                  <div id="m-doc-name" style="font-size:12px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Certificate.pdf</div>
+                  <div id="m-doc-meta" style="font-size:11px; color:#64748B;">Fetched from Compliance Register</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline" style="padding:6px 10px;" onclick="viewAttachedDocument()">View</button>
+            </div>
+
+            <label class="upload-drop">
+              <span>+ Upload Renewed Certificate (PDF / Image)</span>
+              <input id="m-file-input" type="file" accept=".pdf,.png,.jpg,.jpeg" class="hidden" onchange="handleDocumentUpload(event)" />
+            </label>
+          </div>
+
+          <!-- Right: Registered Mobile & Email -->
+          <div class="panel-box">
+            <span class="field-label" style="color:#272B6C; margin-bottom:0;">Registered Notification Contacts</span>
+            <div>
+              <label class="field-label" for="m-owner">Responsible Officer / Dept</label>
+              <input id="m-owner" type="text" class="field-input" onchange="onDetailFieldChange()" />
+            </div>
+            <div>
+              <label class="field-label" for="m-mobile">Registered Mobile No. (WhatsApp)</label>
+              <input id="m-mobile" type="text" class="field-input" placeholder="919845012345" onchange="onDetailFieldChange()" />
+            </div>
+            <div>
+              <label class="field-label" for="m-email">Registered Email ID</label>
+              <input id="m-email" type="email" class="field-input" placeholder="compliance@seonics.in" onchange="onDetailFieldChange()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Pre-Formatted Alert Message Preview -->
+        <div class="panel-box">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span class="field-label" style="margin-bottom:0;">WhatsApp &amp; Email Renewal Alert Message</span>
+            <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:11px;" onclick="copyMessageText()">Copy Text</button>
+          </div>
+          <textarea id="m-message-box" rows="4" class="field-textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="saveAndSyncCurrent()">Save &amp; Sync to Sheet</button>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <button type="button" class="btn btn-whatsapp" onclick="sendWhatsAppReminder()">Send WhatsApp Reminder</button>
+          <button type="button" class="btn btn-navy" onclick="triggerEmailNotification()">Trigger Email Notification</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: GOOGLE SHEET SYNC & APPS SCRIPT SETUP
+       ======================================================================== -->
+  <div id="sheet-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header navy-header">
+        <div>
+          <h3 style="font-size:16px; font-weight:800;">Google Sheet Two-Way Sync &amp; Email Webhook</h3>
+          <p style="font-size:12px; color:#C7D2FE; margin-top:2px;">Connect your Southern Electronics Google Sheet in 2 minutes</p>
+        </div>
+        <button class="modal-close" onclick="closeModal('sheet-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label class="field-label" for="gas-url">Google Apps Script Web App URL</label>
+          <div style="display:flex; gap:8px;">
+            <input id="gas-url" type="url" class="field-input" placeholder="https://script.google.com/macros/s/AKfycb.../exec" />
+            <button class="btn btn-navy" onclick="saveWebhookUrl()">Save &amp; Fetch</button>
+          </div>
+          <p style="font-size:11px; color:#64748B; margin-top:6px;">
+            Leave blank to run with built-in local persistence. Paste your deployed Google Apps Script Web App URL to sync rows directly with Google Sheets and send automated Gmail alerts.
+          </p>
+        </div>
+
+        <div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+            <span class="field-label" style="margin-bottom:0;">Google Apps Script Code (Extensions &rarr; Apps Script)</span>
+            <button class="btn btn-outline" style="padding:4px 10px; font-size:11px;" onclick="copyScriptCode()">Copy Code</button>
+          </div>
+          <pre id="gas-snippet" class="code-block">function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Renewals");
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows.shift();
+  const records = rows.map(r => Object.fromEntries(headers.map((h, i) => [h, r[i]])));
+  return ContentService.createTextOutput(JSON.stringify({ status: "ok", records }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  const payload = JSON.parse(e.postData.contents);
+  if (payload.action === "sendEmail") {
+    MailApp.sendEmail({
+      to: payload.email,
+      subject: "SEONICS Renewal Alert: " + payload.category + " (" + payload.refNumber + ")",
+      body: payload.message
+    });
+  }
+  return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: ADD NEW RENEWAL ITEM
+       ======================================================================== -->
+  <div id="add-modal" class="modal-backdrop">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-brand-tag">SEONICS</span>
+          <h3 style="font-size:16px; font-weight:800; color:#272B6C;">Add New Compliance Renewal</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('add-modal')">&times;</button>
+      </div>
+      <form onsubmit="handleAddRenewal(event)">
+        <div class="modal-body">
+          <div>
+            <label class="field-label">Category Title *</label>
+            <input id="add-cat" required type="text" class="field-input" placeholder="e.g., TRADE LICENSE / DG SET AMC" />
+          </div>
+          <div class="info-grid-2">
+            <div>
+              <label class="field-label">Scope / Asset Description *</label>
+              <input id="add-sub" required type="text" class="field-input" placeholder="e.g., BBMP Industrial License" />
+            </div>
+            <div>
+              <label class="field-label">Certificate / Policy No. *</label>
+              <input id="add-ref" required type="text" class="field-input" placeholder="e.g., BBMP/TR/2026/441" />
+            </div>
+          </div>
+          <div class="info-grid-2">
+            <div>
+              <label class="field-label">Issuing Authority *</label>
+              <input id="add-auth" required type="text" class="field-input" placeholder="e.g., BBMP / KSPCB" />
+            </div>
+            <div>
+              <label class="field-label">Responsible Officer *</label>
+              <input id="add-owner" required type="text" class="field-input" value="Admin & Compliance Dept" />
+            </div>
+          </div>
+          <div class="info-grid-3">
+            <div>
+              <label class="field-label">Last Renewed *</label>
+              <input id="add-last" required type="date" class="field-input" />
+            </div>
+            <div>
+              <label class="field-label">Expiry Date *</label>
+              <input id="add-exp" required type="date" class="field-input" />
+            </div>
+            <div>
+              <label class="field-label">Next Reminder *</label>
+              <input id="add-rem" required type="date" class="field-input" />
+            </div>
+          </div>
+          <div class="info-grid-2">
+            <div>
+              <label class="field-label">Registered WhatsApp No. *</label>
+              <input id="add-mob" required type="text" class="field-input" value="919845012345" />
+            </div>
+            <div>
+              <label class="field-label">Registered Email ID *</label>
+              <input id="add-mail" required type="email" class="field-input" value="compliance@seonics.in" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('add-modal')">Cancel</button>
+          <button type="submit" class="btn btn-navy">Save to Dashboard</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 4: NOTIFICATION AUDIT LOG
+       ======================================================================== -->
+  <div id="logs-modal" class="modal-backdrop">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-brand-tag">SEONICS</span>
+          <h3 style="font-size:16px; font-weight:800; color:#272B6C;">WhatsApp &amp; Email Dispatch Log</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('logs-modal')">&times;</button>
+      </div>
+      <div id="logs-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast">Action completed</div>
+
+  <!-- ========================================================================
+       VANILLA JAVASCRIPT APPLICATION LOGIC
+       ======================================================================== -->
+  <script>
+    // Relative date helper so initial statuses accurately showcase Active, Expiring Soon, and Expired states
+    function relativeDate(daysOffset) {
+      const d = new Date();
+      d.setDate(d.getDate() + daysOffset);
+      return d.toISOString().split("T")[0];
+    }
+
+    const INITIAL_RECORDS = [
+      {
+        id: "rec-veh-1",
+        category: "VEHICLE INSURANCE",
+        subTitle: "Fleet & Company Vehicles — KA-02-MJ-4821 (Mahindra Bolero)",
+        refNumber: "ICICI/VHC/2026/88412",
+        authority: "ICICI Lombard General Insurance",
+        lastRenewed: relativeDate(-353),
+        expiryDate: relativeDate(12),
+        nextReminder: relativeDate(5),
+        mobile: "919845011223",
+        email: "fleet.admin@seonics.in",
+        owner: "Ramesh K. (Transport & Logistics)",
+        docName: "KA02MJ4821_Fleet_Insurance.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-veh-2",
+        category: "VEHICLE INSURANCE",
+        subTitle: "Company Vehicle — KA-04-NB-9012 (Toyota Innova Crysta)",
+        refNumber: "HDFC/VHC/2026/33109",
+        authority: "HDFC ERGO General Insurance",
+        lastRenewed: relativeDate(-210),
+        expiryDate: relativeDate(155),
+        nextReminder: relativeDate(135),
+        mobile: "919845011223",
+        email: "fleet.admin@seonics.in",
+        owner: "Ramesh K. (Transport & Logistics)",
+        docName: "KA04NB9012_Policy_2026.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-fac-1",
+        category: "FACTORY LICENSE",
+        subTitle: "Department of Factories, Boilers, Industrial Safety & Health, Karnataka",
+        refNumber: "FAC/BNG-N/2026/00419",
+        authority: "DISH Karnataka (Peenya Circle)",
+        lastRenewed: relativeDate(-320),
+        expiryDate: relativeDate(45),
+        nextReminder: relativeDate(15),
+        mobile: "919845099887",
+        email: "ehs.compliance@seonics.in",
+        owner: "Suresh Menon (Plant Head)",
+        docName: "SEONICS_Factory_License_Form4.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-pcb-1",
+        category: "POLLUTION CONTROL BOARD",
+        subTitle: "KSPCB Consent for Operation (CFO — Air & Water)",
+        refNumber: "KSPCB/CFO/2026/7712",
+        authority: "Karnataka State Pollution Control Board",
+        lastRenewed: relativeDate(-347),
+        expiryDate: relativeDate(18),
+        nextReminder: relativeDate(4),
+        mobile: "919845099887",
+        email: "ehs.compliance@seonics.in",
+        owner: "Anitha R. (EHS & Compliance Officer)",
+        docName: "KSPCB_CFO_Consent_Order.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-stp-1",
+        category: "STP",
+        subTitle: "Sewage Treatment Plant & ETP Compliance Certificate",
+        refNumber: "STP/ENV/2026/1108",
+        authority: "NABL Accredited Environmental Lab",
+        lastRenewed: relativeDate(-95),
+        expiryDate: relativeDate(-5),
+        nextReminder: relativeDate(0),
+        mobile: "919845044556",
+        email: "facilities@seonics.in",
+        owner: "Prakash V. (Utilities & Maintenance)",
+        docName: "STP_ETP_Compliance_Report.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-fire-1",
+        category: "FIRE NOC & EXTINGUISHER REFILL",
+        subTitle: "Karnataka Fire & Emergency Services NOC & FSS Audit",
+        refNumber: "KFES/NOC/2026/5590",
+        authority: "Karnataka Fire & Emergency Services",
+        lastRenewed: relativeDate(-341),
+        expiryDate: relativeDate(24),
+        nextReminder: relativeDate(10),
+        mobile: "919845044556",
+        email: "safety@seonics.in",
+        owner: "Prakash V. (Fire & Safety Officer)",
+        docName: "KFES_Fire_Safety_NOC.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-ceig-1",
+        category: "CEIG ELECTRICAL SAFETY",
+        subTitle: "Chief Electrical Inspectorate to Govt. — HT/LT & DG Inspection",
+        refNumber: "CEIG/KA/2026/3094",
+        authority: "Chief Electrical Inspectorate, Govt. of Karnataka",
+        lastRenewed: relativeDate(-275),
+        expiryDate: relativeDate(90),
+        nextReminder: relativeDate(70),
+        mobile: "919845077331",
+        email: "electrical@seonics.in",
+        owner: "Karthik S. (Electrical Maintenance)",
+        docName: "CEIG_HT_LT_DG_Approval.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-iso-1",
+        category: "ISO 9001 / AS9100 & NABL CALIBRATION",
+        subTitle: "Aerospace & Environmental Test Lab Accreditation",
+        refNumber: "TUV/AS9100/2026/882",
+        authority: "TUV Rheinland & NABL India",
+        lastRenewed: relativeDate(-300),
+        expiryDate: relativeDate(65),
+        nextReminder: relativeDate(45),
+        mobile: "919845022110",
+        email: "qa.head@seonics.in",
+        owner: "Deepak N. (Quality Assurance Head)",
+        docName: "SEONICS_AS9100_NABL_Cert.pdf",
+        docDataUrl: ""
+      },
+      {
+        id: "rec-lift-1",
+        category: "LIFT & HOIST SAFETY CERTIFICATE",
+        subTitle: "Industrial Goods Lift & Crane Annual Load Test Inspection",
+        refNumber: "LIFT/IND/2026/194",
+        authority: "DISH Karnataka Competent Person",
+        lastRenewed: relativeDate(-356),
+        expiryDate: relativeDate(9),
+        nextReminder: relativeDate(2),
+        mobile: "919845044556",
+        email: "facilities@seonics.in",
+        owner: "Prakash V. (Utilities & Maintenance)",
+        docName: "Industrial_Lift_Crane_Safety.pdf",
+        docDataUrl: ""
+      }
+    ];
+
+    // Application State
+    let records = JSON.parse(localStorage.getItem("seonics_records_v3")) || INITIAL_RECORDS;
+    let alertLogs = JSON.parse(localStorage.getItem("seonics_logs_v3")) || [];
+    let webhookUrl = localStorage.getItem("seonics_webhook_v3") || "";
+    let activeFilter = "ALL";
+    let activeView = "CARDS";
+    let selectedRecordId = null;
+
+    function saveState() {
+      localStorage.setItem("seonics_records_v3", JSON.stringify(records));
+      localStorage.setItem("seonics_logs_v3", JSON.stringify(alertLogs));
+      document.getElementById("log-badge").textContent = alertLogs.length;
+    }
+
+    function computeStatus(expiryDateStr) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const exp = new Date(expiryDateStr);
+      exp.setHours(0, 0, 0, 0);
+      const days = Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
+
+      if (days < 0) {
+        return {
+          code: "EXPIRED",
+          label: "EXPIRED",
+          daysLabel: "Overdue by " + Math.abs(days) + "d",
+          badgeClass: "badge-expired",
+          cardClass: "border-expired",
+          textColor: "#DC2626"
+        };
+      }
+      if (days <= 30) {
+        return {
+          code: "EXPIRING",
+          label: "EXPIRING SOON",
+          daysLabel: days === 0 ? "Expires Today" : days + " days left",
+          badgeClass: "badge-expiring",
+          cardClass: "border-expiring",
+          textColor: "#D97706"
+        };
+      }
+      return {
+        code: "ACTIVE",
+        label: "ACTIVE",
+        daysLabel: days + " days left",
+        badgeClass: "badge-active",
+        cardClass: "",
+        textColor: "#166534"
+      };
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "--";
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // ========================================================================
+    // RENDER DASHBOARD CARDS & TABLE VIEW
+    // ========================================================================
+    function renderDashboard() {
+      const query = document.getElementById("search-input").value.trim().toLowerCase();
+
+      // Update KPI counts
+      let activeCnt = 0, expiringCnt = 0, expiredCnt = 0;
+      records.forEach(r => {
+        const st = computeStatus(r.expiryDate);
+        if (st.code === "ACTIVE") activeCnt++;
+        else if (st.code === "EXPIRING") expiringCnt++;
+        else expiredCnt++;
+      });
+
+      document.getElementById("kpi-total").textContent = records.length;
+      document.getElementById("kpi-active").textContent = activeCnt;
+      document.getElementById("kpi-expiring").textContent = expiringCnt;
+      document.getElementById("kpi-expired").textContent = expiredCnt;
+
+      // Filter records
+      const filtered = records.filter(r => {
+        const st = computeStatus(r.expiryDate);
+        const matchFilter = activeFilter === "ALL" || st.code === activeFilter;
+        const matchQuery = !query ||
+          r.category.toLowerCase().includes(query) ||
+          r.subTitle.toLowerCase().includes(query) ||
+          r.refNumber.toLowerCase().includes(query) ||
+          r.authority.toLowerCase().includes(query) ||
+          r.owner.toLowerCase().includes(query);
+        return matchFilter && matchQuery;
+      });
+
+      // Group by category for clean Cards Grid
+      const groups = new Map();
+      filtered.forEach(r => {
+        if (!groups.has(r.category)) groups.set(r.category, []);
+        groups.get(r.category).push(r);
+      });
+
+      const gridEl = document.getElementById("cards-grid");
+      gridEl.innerHTML = "";
+
+      if (groups.size === 0) {
+        gridEl.innerHTML = `
+          <div style="grid-column:1/-1; background:#FFFFFF; border-radius:16px; padding:40px; text-align:center;">
+            <strong style="font-size:15px; color:#272B6C;">No matching renewals found</strong>
+            <p style="font-size:12px; color:#64748B; margin-top:6px;">Try clearing your search filter or add a new renewal item.</p>
+          </div>
+        `;
+      } else {
+        groups.forEach((items, categoryName) => {
+          // Sort items inside category by nearest expiry
+          const sorted = [...items].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+          const lead = sorted[0];
+          const st = computeStatus(lead.expiryDate);
+
+          const card = document.createElement("div");
+          card.className = "renewal-card " + st.cardClass;
+          card.innerHTML = `
+            <div>
+              <div class="card-top-banner">
+                <div class="card-cat-row">
+                  <div class="card-title">${escapeHtml(categoryName)}</div>
+                  ${items.length > 1 ? `<span class="unit-pill">${items.length} Units</span>` : ""}
+                </div>
+                <div class="card-subtitle">${escapeHtml(lead.subTitle)}</div>
+              </div>
+
+              <div class="card-body">
+                <div class="status-row">
+                  <span class="status-badge ${st.badgeClass}">${st.label}</span>
+                  <span class="days-text" style="color:${st.textColor};">${st.daysLabel}</span>
+                </div>
+
+                <div class="dates-box">
+                  <div>
+                    <span class="date-label">Expiry Date</span>
+                    <span class="date-val">${formatDate(lead.expiryDate)}</span>
+                  </div>
+                  <div>
+                    <span class="date-label">Next Reminder</span>
+                    <span class="date-val" style="color:#334155;">${formatDate(lead.nextReminder)}</span>
+                  </div>
+                </div>
+
+                <div class="meta-list">
+                  <div class="meta-row">
+                    <span>Ref / License No:</span>
+                    <span>${escapeHtml(lead.refNumber)}</span>
+                  </div>
+                  <div class="meta-row">
+                    <span>Document:</span>
+                    <span>${escapeHtml(lead.docName)}</span>
+                  </div>
+                  <div class="meta-row">
+                    <span>Registered Mobile:</span>
+                    <span>+${escapeHtml(lead.mobile)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button type="button" class="btn-click-here" onclick="openDetailModal('${lead.id}')">
+                <span>CLICK HERE</span>
+                <span>&rarr;</span>
+              </button>
+            </div>
+          `;
+          gridEl.appendChild(card);
+        });
+      }
+
+      // Render Google Sheet Table View
+      const tbody = document.getElementById("table-body");
+      tbody.innerHTML = "";
+      filtered.forEach(r => {
+        const st = computeStatus(r.expiryDate);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <strong style="color:#272B6C; display:block;">${escapeHtml(r.category)}</strong>
+            <span style="font-size:11px; color:#64748B;">${escapeHtml(r.subTitle)}</span>
+          </td>
+          <td style="font-weight:700;">${escapeHtml(r.refNumber)}</td>
+          <td>${formatDate(r.lastRenewed)}</td>
+          <td style="font-weight:800; color:#272B6C;">${formatDate(r.expiryDate)}</td>
+          <td>${formatDate(r.nextReminder)}</td>
+          <td><span class="status-badge ${st.badgeClass}">${st.label} (${st.daysLabel})</span></td>
+          <td>
+            <div style="font-weight:700;">+${escapeHtml(r.mobile)}</div>
+            <div style="font-size:11px; color:#64748B;">${escapeHtml(r.email)}</div>
+          </td>
+          <td style="text-align:right;">
+            <button type="button" class="btn btn-navy" style="padding:7px 12px; letter-spacing:0.08em;" onclick="openDetailModal('${r.id}')">CLICK HERE</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setFilter(code) {
+      activeFilter = code;
+      document.querySelectorAll(".filter-pill").forEach(pill => {
+        pill.classList.toggle("active", pill.dataset.filter === code);
+      });
+      renderDashboard();
+    }
+
+    function setView(view) {
+      activeView = view;
+      document.getElementById("cards-grid").classList.toggle("hidden", view !== "CARDS");
+      document.getElementById("table-view").classList.toggle("hidden", view !== "TABLE");
+      document.getElementById("btn-view-cards").classList.toggle("active", view === "CARDS");
+      document.getElementById("btn-view-table").classList.toggle("active", view === "TABLE");
+    }
+
+    // ========================================================================
+    // "CLICK HERE" DETAIL MODAL & NOTIFICATION LOGIC
+    // ========================================================================
+    function openDetailModal(recordId) {
+      const rec = records.find(r => r.id === recordId);
+      if (!rec) return;
+      selectedRecordId = rec.id;
+
+      // Check if category has multiple sub-units (e.g., multiple fleet vehicles)
+      const siblings = records.filter(r => r.category === rec.category);
+      const subBar = document.getElementById("sub-unit-bar");
+      const subPills = document.getElementById("sub-unit-pills");
+      if (siblings.length > 1) {
+        subBar.classList.remove("hidden");
+        subPills.innerHTML = "";
+        siblings.forEach(item => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = item.id === rec.id ? "btn btn-navy" : "btn btn-outline";
+          btn.textContent = item.subTitle;
+          btn.onclick = () => openDetailModal(item.id);
+          subPills.appendChild(btn);
+        });
+      } else {
+        subBar.classList.add("hidden");
+      }
+
+      populateModalData(rec);
+      document.getElementById("detail-modal").classList.add("open");
+    }
+
+    function populateModalData(rec) {
+      const st = computeStatus(rec.expiryDate);
+      document.getElementById("m-title").textContent = rec.category;
+      document.getElementById("m-subtitle").textContent = rec.subTitle;
+
+      const badge = document.getElementById("m-status-badge");
+      badge.textContent = st.label;
+      badge.className = "status-badge " + st.badgeClass;
+
+      document.getElementById("m-ref").textContent = rec.refNumber;
+      document.getElementById("m-authority").textContent = rec.authority;
+      document.getElementById("m-days-left").textContent = st.daysLabel;
+      document.getElementById("m-days-left").style.color = st.textColor;
+
+      document.getElementById("m-last-renewed").value = rec.lastRenewed || "";
+      document.getElementById("m-expiry-date").value = rec.expiryDate || "";
+      document.getElementById("m-next-reminder").value = rec.nextReminder || "";
+
+      document.getElementById("m-doc-name").textContent = rec.docName || "Document.pdf";
+      document.getElementById("m-doc-meta").textContent = rec.docDataUrl ? "Uploaded & Stored Locally" : "Linked in Compliance Register";
+
+      document.getElementById("m-owner").value = rec.owner || "";
+      document.getElementById("m-mobile").value = rec.mobile || "";
+      document.getElementById("m-email").value = rec.email || "";
+
+      const alertText =
+        "SOUTHERN ELECTRONICS (SEONICS) — STATUTORY RENEWAL REMINDER\n" +
+        "Document: " + rec.category + "\n" +
+        "Details: " + rec.subTitle + "\n" +
+        "Certificate / Policy No: " + rec.refNumber + "\n" +
+        "Expiry Date: " + formatDate(rec.expiryDate) + " (" + st.daysLabel + ")\n" +
+        "Next Reminder Date: " + formatDate(rec.nextReminder) + "\n" +
+        "Please initiate renewal and upload the updated certificate to the SEONICS Compliance Portal.";
+
+      document.getElementById("m-message-box").value = alertText;
+    }
+
+    function getActiveRecord() {
+      return records.find(r => r.id === selectedRecordId);
+    }
+
+    function onDetailFieldChange() {
+      const rec = getActiveRecord();
+      if (!rec) return;
+      rec.lastRenewed = document.getElementById("m-last-renewed").value;
+      rec.expiryDate = document.getElementById("m-expiry-date").value;
+      rec.nextReminder = document.getElementById("m-next-reminder").value;
+      rec.owner = document.getElementById("m-owner").value.trim();
+      rec.mobile = document.getElementById("m-mobile").value.replace(/[^0-9]/g, "");
+      rec.email = document.getElementById("m-email").value.trim();
+      saveState();
+      populateModalData(rec);
+      renderDashboard();
+    }
+
+    function handleDocumentUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const rec = getActiveRecord();
+      if (!rec) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        rec.docName = file.name;
+        // Store data URL if under ~1.5MB so it persists cleanly in localStorage
+        if (e.target.result && e.target.result.length < 1500000) {
+          rec.docDataUrl = e.target.result;
+        } else {
+          rec.docDataUrl = URL.createObjectURL(file);
+        }
+        saveState();
+        populateModalData(rec);
+        renderDashboard();
+        showToast("Attached document: " + file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function viewAttachedDocument() {
+      const rec = getActiveRecord();
+      if (!rec) return;
+      if (rec.docDataUrl) {
+        const win = window.open();
+        if (win) {
+          win.document.write('<iframe src="' + rec.docDataUrl + '" frameborder="0" style="border:0; width:100%; height:100%;" allowfullscreen></iframe>');
+        } else {
+          showToast("Popup blocked — please allow popups to preview file.");
+        }
+      } else {
+        showToast("Linked Register File: " + rec.docName + " (Upload a local scan to preview inline)");
+      }
+    }
+
+    async function saveAndSyncCurrent() {
+      onDetailFieldChange();
+      const rec = getActiveRecord();
+      if (webhookUrl && rec) {
+        try {
+          await fetch(webhookUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "syncRecord", record: rec })
+          });
+          showToast("Saved & synced to Google Sheet!");
+          return;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      showToast("Saved locally & ready for Google Sheet sync!");
+    }
+
+    // WhatsApp Reminder Trigger
+    function sendWhatsAppReminder() {
+      onDetailFieldChange();
+      const rec = getActiveRecord();
+      if (!rec) return;
+
+      const phone = rec.mobile.replace(/[^0-9]/g, "");
+      if (!phone) {
+        showToast("Enter a valid WhatsApp mobile number first.");
+        return;
+      }
+
+      const msg = document.getElementById("m-message-box").value;
+      recordDispatchLog("WhatsApp", rec.category, "+" + phone);
+
+      const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+      showToast("WhatsApp reminder launched for +" + phone);
+    }
+
+    // Email Notification Trigger
+    async function triggerEmailNotification() {
+      onDetailFieldChange();
+      const rec = getActiveRecord();
+      if (!rec) return;
+
+      if (!rec.email) {
+        showToast("Enter a registered Email ID first.");
+        return;
+      }
+
+      const msg = document.getElementById("m-message-box").value;
+      const subject = "SEONICS Renewal Alert: " + rec.category + " (" + rec.refNumber + ") — Exp: " + formatDate(rec.expiryDate);
+
+      recordDispatchLog("Email", rec.category, rec.email);
+
+      if (webhookUrl) {
+        try {
+          await fetch(webhookUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "sendEmail",
+              category: rec.category,
+              refNumber: rec.refNumber,
+              email: rec.email,
+              message: msg
+            })
+          });
+          showToast("Email webhook triggered for " + rec.email);
+          return;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      const mailto = "mailto:" + encodeURIComponent(rec.email) + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(msg);
+      window.open(mailto, "_blank");
+      showToast("Email notification triggered for " + rec.email);
+    }
+
+    function copyMessageText() {
+      const box = document.getElementById("m-message-box");
+      box.select();
+      document.execCommand("copy");
+      showToast("Alert message copied to clipboard!");
+    }
+
+    // ========================================================================
+    // ALERT LOGS, GOOGLE SHEETS SYNC, CSV EXPORT & ADD RENEWAL
+    // ========================================================================
+    function recordDispatchLog(channel, category, recipient) {
+      alertLogs.unshift({
+        timestamp: new Date().toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }),
+        channel,
+        category,
+        recipient
+      });
+      saveState();
+    }
+
+    function openLogsModal() {
+      const body = document.getElementById("logs-body");
+      if (alertLogs.length === 0) {
+        body.innerHTML = '<p style="text-align:center; color:#64748B; padding:24px 0;">No WhatsApp or Email reminders dispatched yet. Click <strong>CLICK HERE</strong> on any renewal card to trigger an alert.</p>';
+      } else {
+        body.innerHTML = alertLogs.map(item => `
+          <div style="padding:12px; border:1px solid #E2E8F0; border-radius:12px; background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:${item.channel === 'WhatsApp' ? '#16A34A' : '#272B6C'};">[${escapeHtml(item.channel)}]</strong>
+              <strong style="margin-left:4px;">${escapeHtml(item.category)}</strong>
+              <div style="font-size:11px; color:#64748B; margin-top:2px;">Sent to: <strong>${escapeHtml(item.recipient)}</strong></div>
+            </div>
+            <span style="font-size:11px; color:#64748B; font-weight:700;">${escapeHtml(item.timestamp)}</span>
+          </div>
+        `).join("");
+      }
+      document.getElementById("logs-modal").classList.add("open");
+    }
+
+    function openSheetModal() {
+      document.getElementById("gas-url").value = webhookUrl;
+      document.getElementById("sheet-modal").classList.add("open");
+    }
+
+    function saveWebhookUrl() {
+      webhookUrl = document.getElementById("gas-url").value.trim();
+      localStorage.setItem("seonics_webhook_v3", webhookUrl);
+      document.getElementById("sheet-sync-label").textContent = webhookUrl ? "Google Sheet: Connected" : "Google Sheet Sync";
+      closeModal("sheet-modal");
+      if (webhookUrl) {
+        syncFromGoogleSheet();
+      } else {
+        showToast("Using built-in local storage mode.");
+      }
+    }
+
+    async function syncFromGoogleSheet() {
+      if (!webhookUrl) {
+        openSheetModal();
+        showToast("Paste your Google Apps Script URL to fetch live data.");
+        return;
+      }
+      try {
+        showToast("Fetching rows from Google Sheet...");
+        const res = await fetch(webhookUrl);
+        const data = await res.json();
+        if (data && Array.isArray(data.records) && data.records.length > 0) {
+          records = data.records.map((row, idx) => ({
+            id: row.ID || "sheet-" + idx,
+            category: String(row.Category || "GENERAL").toUpperCase(),
+            subTitle: row.SubTitle || "",
+            refNumber: row.RefNumber || "",
+            authority: row.Authority || "Statutory Authority",
+            lastRenewed: row.LastRenewed ? String(row.LastRenewed).split("T")[0] : relativeDate(-180),
+            expiryDate: row.ExpiryDate ? String(row.ExpiryDate).split("T")[0] : relativeDate(30),
+            nextReminder: row.NextReminder ? String(row.NextReminder).split("T")[0] : relativeDate(15),
+            mobile: String(row.Mobile || "919845012345"),
+            email: row.Email || "compliance@seonics.in",
+            owner: row.Owner || "Compliance Dept",
+            docName: row.DocName || "Sheet_Document.pdf",
+            docDataUrl: ""
+          }));
+          saveState();
+          renderDashboard();
+          showToast("Fetched " + records.length + " records from Google Sheet!");
+        }
+      } catch (err) {
+        showToast("Unable to fetch from Google Sheet URL. Check Web App access permissions.");
+      }
+    }
+
+    function copyScriptCode() {
+      const code = document.getElementById("gas-snippet").textContent;
+      const ta = document.createElement("textarea");
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast("Google Apps Script copied!");
+    }
+
+    function exportCSV() {
+      const headers = ["ID", "Category", "SubTitle", "RefNumber", "Authority", "LastRenewed", "ExpiryDate", "NextReminder", "Mobile", "Email", "Owner", "DocName"];
+      const csvRows = [headers.join(",")];
+      records.forEach(r => {
+        const vals = [r.id, r.category, r.subTitle, r.refNumber, r.authority, r.lastRenewed, r.expiryDate, r.nextReminder, r.mobile, r.email, r.owner, r.docName];
+        csvRows.push(vals.map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(","));
+      });
+      const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "SEONICS_Compliance_Renewals.csv";
+      link.click();
+      showToast("Exported SEONICS_Compliance_Renewals.csv");
+    }
+
+    function openAddModal() {
+      document.getElementById("add-last").value = relativeDate(-300);
+      document.getElementById("add-exp").value = relativeDate(45);
+      document.getElementById("add-rem").value = relativeDate(30);
+      document.getElementById("add-modal").classList.add("open");
+    }
+
+    function handleAddRenewal(e) {
+      e.preventDefault();
+      const item = {
+        id: "rec-" + Date.now(),
+        category: document.getElementById("add-cat").value.trim().toUpperCase(),
+        subTitle: document.getElementById("add-sub").value.trim(),
+        refNumber: document.getElementById("add-ref").value.trim(),
+        authority: document.getElementById("add-auth").value.trim(),
+        owner: document.getElementById("add-owner").value.trim(),
+        lastRenewed: document.getElementById("add-last").value,
+        expiryDate: document.getElementById("add-exp").value,
+        nextReminder: document.getElementById("add-rem").value,
+        mobile: document.getElementById("add-mob").value.replace(/[^0-9]/g, ""),
+        email: document.getElementById("add-mail").value.trim(),
+        docName: "Uploaded_License.pdf",
+        docDataUrl: ""
+      };
+      records.unshift(item);
+      saveState();
+      renderDashboard();
+      closeModal("add-modal");
+      e.target.reset();
+      showToast("Added " + item.category + " to dashboard!");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    let toastTimeout;
+    function showToast(message) {
+      const t = document.getElementById("toast");
+      document.getElementById("toast-msg");
+      t.textContent = message;
+      t.classList.add("show");
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => t.classList.remove("show"), 3200);
+    }
+
+    // Initialize Dashboard immediately
+    (function init() {
+      document.getElementById("log-badge").textContent = alertLogs.length;
+      if (webhookUrl) {
+        document.getElementById("sheet-sync-label").textContent = "Google Sheet: Connected";
+      }
+      renderDashboard();
+    })();
+  </script>
+</body>
+</html>
